@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import { getGifts } from "../helpers/getGifs";
+import GifItem from "./GifItem";
 
 
 function GifGrid({ category }) {
-    
-    const [counter, setcounter] = useState(10);
-    useEffect( ()=> {
-        getGifts(category);
 
+    const [images, setImages] = useState([])
+    
+    //const [counter, setcounter] = useState(10);
+
+    const getImages = async() => {
+        const newImages = await getGifts(category);
+        setImages(newImages);
+    }
+    useEffect( ()=> {
+        
+        getImages();
         
     }, [])
 
@@ -16,8 +24,16 @@ function GifGrid({ category }) {
     return (
         <>
             <h3>{ category }</h3>    
-            <h5>{ counter }</h5>
-            <button onClick={()=> setcounter(counter + 1)}>+1</button>
+            <div className="card-grid">
+                {
+                    images.map( ( image ) => (
+                        <GifItem 
+                            key={ image.id }
+                            { ...image }
+                        />
+                    ))
+                }
+            </div>
         </>
     )
 }
